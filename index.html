@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de promedio de notas online gratis</title>
+<meta name="description" content="Calcula tu calificación según tu escala de exigencia (60 %, 70 %…), sabe si aprobaste y averigua cuántos puntos necesitas en el próximo examen. Gratis y sin registro.">
+<style>
+:root{
+  --paper:#f4f7fc; --card:#ffffff; --ink:#14213d; --muted:#5b6785;
+  --grid:#dde6f3; --line:#c5d2e6; --accent:#2457d6; --accent-ink:#ffffff;
+  --ok:#1b7a4b; --bad:#b3261e; --mark:#ffe27a;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0f1626; --card:#18223a; --ink:#e8edf8; --muted:#9aa7c4;
+    --grid:#1b2742; --line:#2c3a5c; --accent:#7aa2ff; --accent-ink:#0f1626;
+    --ok:#5fd29a; --bad:#ff8a80; --mark:#5c4b00;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:1rem}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.55;
+}
+main{max-width:720px; margin:0 auto; padding:1.5rem 1rem 3rem}
+h1{font-size:clamp(1.6rem,5vw,2.2rem); line-height:1.15; margin:.5rem 0 .4rem; letter-spacing:-.01em}
+h2{font-size:1.25rem; margin:2rem 0 .5rem}
+.lead{color:var(--muted); margin:0 0 1.25rem; max-width:60ch}
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem}
+.settings{display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem}
+label{font-size:.9rem; color:var(--muted)}
+input{
+  font:inherit; color:var(--ink); background:var(--paper); width:100%;
+  border:1px solid var(--line); border-radius:6px; padding:.5rem .6rem; min-width:0;
+}
+input:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+.settings label{flex:1 1 140px; display:block}
+.settings input{margin-top:.25rem}
+.head,.row{display:grid; grid-template-columns:1fr 84px 84px 40px; gap:.5rem; align-items:center}
+.head{font-size:.85rem; color:var(--muted); padding:0 0 .35rem}
+.row{margin-bottom:.5rem}
+.row button{
+  height:40px; border:1px solid var(--line); background:transparent; color:var(--muted);
+  border-radius:6px; font-size:1.1rem; cursor:pointer;
+}
+.row button:hover{color:var(--bad); border-color:var(--bad)}
+.actions{display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem}
+.btn{
+  font:inherit; font-weight:600; cursor:pointer; border-radius:6px; padding:.55rem 1rem;
+  border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink);
+}
+.btn.ghost{background:transparent; color:var(--accent)}
+.result{margin-top:1rem; display:grid; gap:1rem}
+.score{display:flex; align-items:baseline; gap:.75rem; flex-wrap:wrap}
+.num{
+  font-size:clamp(3rem,14vw,4.5rem); font-weight:800; line-height:1; letter-spacing:-.03em;
+  background:linear-gradient(transparent 62%,var(--mark) 62%); padding:0 .15em;
+}
+.status{font-weight:700; font-size:1.1rem}
+.status.ok{color:var(--ok)} .status.bad{color:var(--bad)}
+.note{color:var(--muted); font-size:.92rem; margin:.4rem 0 0}
+.need{border-left:4px solid var(--accent); padding-left:.75rem}
+table{width:100%; border-collapse:collapse}
+caption{text-align:left; font-weight:600; margin-bottom:.4rem}
+th,td{padding:.4rem .5rem; border-bottom:1px solid var(--line); text-align:left}
+th{color:var(--muted); font-weight:600; font-size:.85rem}
+.ad{margin:1.5rem 0; min-height:90px; text-align:center}
+details{border-bottom:1px solid var(--line); padding:.6rem 0}
+summary{cursor:pointer; font-weight:600}
+details p{margin:.5rem 0 0; color:var(--muted)}
+code{background:var(--card); border:1px solid var(--line); border-radius:4px; padding:.05rem .35rem}
+footer{color:var(--muted); font-size:.85rem; margin-top:2.5rem}
+@media (max-width:420px){.head,.row{grid-template-columns:1fr 70px 70px 36px}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Calculadora de promedio de notas</h1>
+  <p class="lead">Carga los puntos de cada evaluación, indica tu escala de exigencia y descubre qué calificación te corresponde, si aprobaste y cuánto necesitas en lo que falta.</p>
+
+  <div class="card">
+    <div class="settings">
+      <label>Nota máxima
+        <input id="max" type="text" inputmode="decimal" value="5">
+      </label>
+      <label>Nota mínima para aprobar
+        <input id="min" type="text" inputmode="decimal" value="2">
+      </label>
+      <label>Escala de exigencia (%)
+        <input id="ex" type="text" inputmode="decimal" value="60">
+      </label>
+    </div>
+
+    <div class="head"><span>Evaluación</span><span>Puntos</span><span>De</span><span></span></div>
+    <div id="rows"></div>
+
+    <div class="actions">
+      <button class="btn" id="add" type="button">Agregar evaluación</button>
+      <button class="btn ghost" id="clear" type="button">Borrar todo</button>
+    </div>
+  </div>
+
+  <!-- ANUNCIO 1: pega aquí el código de AdSense cuando te aprueben -->
+  <div class="ad" id="ad1"></div>
+
+  <div class="card result" aria-live="polite">
+    <div>
+      <div class="score"><span class="num" id="avg">–</span><span class="status" id="status"></span></div>
+      <p class="note" id="info">Escribe los puntos que sacaste para ver tu calificación.</p>
+    </div>
+    <div class="need" id="need" hidden></div>
+    <div id="tabla" hidden></div>
+    <div id="esc" hidden></div>
+  </div>
+
+  <h2>Cómo se calcula la calificación</h2>
+  <p>Se suman los puntos que obtuviste en todas las evaluaciones y se comparan con el total de puntos posibles. Eso da un porcentaje. La <strong>escala de exigencia</strong> es el porcentaje mínimo para aprobar: con una escala del 60 %, necesitas al menos el 60 % de los puntos para llegar a la nota mínima.</p>
+  <p>Desde ese porcentaje hasta el 100 %, el rango se reparte en partes iguales entre las calificaciones aprobadas, y la nota máxima es el tope. Lo mismo pasa por debajo de la exigencia: desde 0 hasta ese porcentaje se reparten las notas reprobadas, empezando en 1 y terminando justo antes de la nota mínima. Ejemplo con escala del 60 %, notas de 2 a 5 y 100 puntos: 60 a 69 puntos es un 2, 70 a 79 un 3, 80 a 89 un 4 y 90 o más un 5. Por debajo del 60 % estás reprobado, y esa parte de la escala se reparte entre las notas más bajas (en este ejemplo, solo el 1).</p>
+  <p>Los puntos de cada fila son lo que sacaste y lo que valía esa evaluación. Si todavía no rendiste una, deja los puntos vacíos y completa solo lo que vale: la calculadora te dirá cuánto necesitas en ella. Puedes escribir decimales con coma o con punto.</p>
+
+  <h2>Preguntas frecuentes</h2>
+  <details><summary>¿Cómo cambio la escala, por ejemplo al 70 %?</summary>
+    <p>Escribe 70 en “Escala de exigencia”. La tabla de calificaciones se recalcula sola.</p></details>
+  <details><summary>¿Qué nota necesito en el examen final?</summary>
+    <p>Carga tus evaluaciones con los puntos que sacaste. En el final deja “Puntos” vacío y escribe cuánto vale. La tabla te muestra qué puntaje necesitas en él para cada calificación.</p></details>
+  <details><summary>¿Se guardan mis datos?</summary>
+    <p>No. Todo se calcula en tu navegador y no se envía a ningún servidor.</p></details>
+
+  <!-- ANUNCIO 2: segundo bloque de anuncios, opcional -->
+  <div class="ad" id="ad2"></div>
+
+  <footer>Los resultados son orientativos. Confirma siempre las reglas de evaluación con tu institución.</footer>
+</main>
+
+<script>
+(function(){
+  var rowsEl=document.getElementById('rows');
+  function $(i){return document.getElementById(i);}
+  function num(v){
+    v=String(v).trim().replace(',','.');
+    if(v==='')return null;
+    var n=Number(v);
+    return isFinite(n)?n:null;
+  }
+  function fmt(n){return (Math.round(n*100)/100).toString().replace('.',',');}
+  function up(n){return Math.ceil(n*100-1e-9)/100;}
+  function addRow(name,pts,of){
+    var r=document.createElement('div'); r.className='row';
+    r.innerHTML='<input type="text" aria-label="Nombre" placeholder="Ej. Parcial 1">'+
+      '<input type="text" inputmode="decimal" aria-label="Puntos obtenidos" placeholder="0">'+
+      '<input type="text" inputmode="decimal" aria-label="Puntos totales de la evaluación" placeholder="0">'+
+      '<button type="button" aria-label="Quitar fila">×</button>';
+    var f=r.querySelectorAll('input');
+    f[0].value=name||''; f[1].value=pts||''; f[2].value=of||'';
+    r.querySelector('button').onclick=function(){r.remove();calc();};
+    rowsEl.appendChild(r);
+  }
+  function calc(){
+    var max=num($('max').value), min=num($('min').value), ex=num($('ex').value);
+    var avg=$('avg'), st=$('status'), info=$('info'), need=$('need'), tabla=$('tabla'), esc=$('esc');
+    need.hidden=true; tabla.hidden=true; esc.hidden=true; st.textContent=''; st.className='status';
+    if(max===null||min===null||ex===null||max<min||ex<=0||ex>100){
+      avg.textContent='–';
+      info.textContent='Revisa la nota máxima, la nota mínima y la escala de exigencia (entre 1 y 100).';
+      return;
+    }
+    var obt=0, tot=0, pend=0, capped=false;
+    [].forEach.call(rowsEl.children,function(r){
+      var f=r.querySelectorAll('input'), o=num(f[1].value), t=num(f[2].value);
+      if(t===null||t<=0)return;
+      tot+=t;
+      if(o===null){pend+=t;return;}
+      if(o>t){o=t;capped=true;}
+      obt+=Math.max(o,0);
+    });
+    if(tot===0){avg.textContent='–'; info.textContent='Escribe los puntos que sacaste y cuánto valía cada evaluación.'; return;}
+    var pct=obt/tot*100, k=max-min+1, w=(100-ex)/k;
+    var nf=Math.max(0,Math.ceil(min)-1), fw=nf>0?ex/nf:0, g;
+    if(pct+1e-9<ex) g=nf>0?Math.min(nf,1+Math.floor(pct/fw+1e-9)):0;
+    else g=Math.min(max,min+Math.floor((pct-ex)/w+1e-9));
+    avg.textContent=fmt(g);
+    info.innerHTML='Puntos: <strong>'+fmt(obt)+'</strong> de '+fmt(tot)+' ('+fmt(pct)+' %), calificación sobre '+fmt(max)+'.'+
+      (pend>0?' Todavía faltan evaluaciones por cargar.':'')+
+      (capped?' Algún puntaje superaba el total de su evaluación y se tomó como el total.':'');
+    if(pend===0){
+      var ok=pct+1e-9>=ex&&g>=min;
+      st.textContent=ok?'Aprobado':'Reprobado'; st.className='status '+(ok?'ok':'bad');
+    }
+    function pts(t){return (ex+(t-min)*w)/100*tot;}
+    if(pend>0){
+      var rowsT='';
+      for(var t=min;t<=max;t++){
+        var n=pts(t)-obt, cell;
+        if(n<=0)cell='Ya lo tienes';
+        else if(n>pend+1e-9)cell='No alcanza';
+        else cell='<strong>'+fmt(up(n))+'</strong> de '+fmt(pend);
+        rowsT+='<tr><td>'+fmt(t)+'</td><td>'+cell+'</td></tr>';
+      }
+      tabla.innerHTML='<table><caption>Qué necesitas en lo que falta</caption><thead><tr><th scope="col">Para sacar</th><th scope="col">Puntos que necesitas</th></tr></thead><tbody>'+rowsT+'</tbody></table>';
+      tabla.hidden=false;
+      var nm=pts(min)-obt;
+      need.innerHTML=nm<=0?'Con lo que llevas ya alcanzas la nota mínima para aprobar.':nm>pend+1e-9?'Con lo que falta ya no alcanzas la nota mínima para aprobar.':'Para aprobar necesitas al menos <strong>'+fmt(up(nm))+'</strong> puntos de los '+fmt(pend)+' que faltan.';
+      need.hidden=false;
+    }
+    var rs='';
+    for(var v=1;v<=nf;v++){
+      rs+='<tr><td>'+v+'</td><td>Desde '+fmt(up((v-1)*fw/100*tot))+' puntos ('+fmt((v-1)*fw)+' %), reprobado</td></tr>';
+    }
+    for(var u=min;u<=max;u++){
+      rs+='<tr><td>'+fmt(u)+'</td><td>Desde '+fmt(up(pts(u)))+' puntos ('+fmt(ex+(u-min)*w)+' %)</td></tr>';
+    }
+    esc.innerHTML='<table><caption>Escala de calificaciones sobre '+fmt(tot)+' puntos</caption><thead><tr><th scope="col">Calificación</th><th scope="col">Puntos</th></tr></thead><tbody>'+rs+'</tbody></table>';
+    esc.hidden=false;
+  }
+  $('add').onclick=function(){addRow();};
+  $('clear').onclick=function(){rowsEl.innerHTML='';addRow('','','');addRow('','','');calc();};
+  document.addEventListener('input',calc);
+  addRow('Parcial 1','','30'); addRow('Parcial 2','','30'); addRow('Examen final','','40');
+  calc();
+})();
+</script>
+</body>
+</html>
