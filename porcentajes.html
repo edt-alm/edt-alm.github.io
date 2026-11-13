@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de porcentajes online gratis</title>
+<meta name="description" content="Calcula porcentajes al instante: el porcentaje de un número, qué porcentaje es una cantidad de otra, aumentos, descuentos y variación porcentual. Gratis y sin registro.">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6719610494387542"
+     crossorigin="anonymous"></script>
+<style>
+:root{
+  --paper:#f4f7fc; --card:#ffffff; --ink:#14213d; --muted:#5b6785;
+  --grid:#dde6f3; --line:#c5d2e6; --accent:#2457d6; --accent-ink:#ffffff;
+  --ok:#1b7a4b; --bad:#b3261e; --mark:#ffe27a;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#0f1626; --card:#18223a; --ink:#e8edf8; --muted:#9aa7c4;
+    --grid:#1b2742; --line:#2c3a5c; --accent:#7aa2ff; --accent-ink:#0f1626;
+    --ok:#5fd29a; --bad:#ff8a80; --mark:#5c4b00;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.55;
+}
+main{max-width:720px; margin:0 auto; padding:1.5rem 1rem 3rem}
+nav{font-size:.9rem; margin-bottom:.5rem}
+a{color:var(--accent)}
+a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent); outline-offset:2px}
+h1{font-size:clamp(1.6rem,5vw,2.2rem); line-height:1.15; margin:.5rem 0 .4rem; letter-spacing:-.01em}
+h2{font-size:1.25rem; margin:2rem 0 .5rem}
+h3{font-size:1.05rem; margin:0 0 .6rem}
+.lead{color:var(--muted); margin:0 0 1.25rem; max-width:60ch}
+.card{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem; margin-bottom:1rem}
+.line{display:flex; flex-wrap:wrap; align-items:center; gap:.5rem}
+.line span{color:var(--muted)}
+input,select{
+  font:inherit; color:var(--ink); background:var(--paper);
+  border:1px solid var(--line); border-radius:6px; padding:.5rem .6rem; min-width:0;
+}
+input{width:110px}
+select{max-width:100%}
+.out{margin:.8rem 0 0; font-size:1.05rem; min-height:1.6em}
+.out strong{font-size:1.5rem; background:linear-gradient(transparent 62%,var(--mark) 62%); padding:0 .15em}
+.out.err{color:var(--bad)}
+.ad{margin:1.5rem 0; min-height:90px; text-align:center}
+details{border-bottom:1px solid var(--line); padding:.6rem 0}
+summary{cursor:pointer; font-weight:600}
+details p{margin:.5rem 0 0; color:var(--muted)}
+code{background:var(--card); border:1px solid var(--line); border-radius:4px; padding:.05rem .35rem}
+footer{color:var(--muted); font-size:.85rem; margin-top:2.5rem}
+</style>
+</head>
+<body>
+<main>
+  <nav><a href="index.html">← Calculadora de notas</a></nav>
+  <h1>Calculadora de porcentajes</h1>
+  <p class="lead">Elige el cálculo que necesitas y escribe los números. El resultado aparece al instante.</p>
+
+  <section class="card" aria-labelledby="t1">
+    <h3 id="t1">¿Cuánto es el X % de un número?</h3>
+    <div class="line">
+      <span>El</span><input id="a1" type="text" inputmode="decimal" aria-label="Porcentaje" placeholder="20">
+      <span>% de</span><input id="b1" type="text" inputmode="decimal" aria-label="Número" placeholder="150">
+    </div>
+    <p class="out" id="r1" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="t2">
+    <h3 id="t2">¿Qué porcentaje es una cantidad de otra?</h3>
+    <div class="line">
+      <input id="a2" type="text" inputmode="decimal" aria-label="Cantidad" placeholder="30">
+      <span>es qué % de</span><input id="b2" type="text" inputmode="decimal" aria-label="Total" placeholder="150">
+    </div>
+    <p class="out" id="r2" aria-live="polite"></p>
+  </section>
+
+  <!-- ANUNCIO 1: pega aquí el código del bloque de anuncios -->
+  <div class="ad" id="ad1"></div>
+
+  <section class="card" aria-labelledby="t3">
+    <h3 id="t3">Aumentar o descontar un porcentaje</h3>
+    <div class="line">
+      <select id="m3" aria-label="Operación">
+        <option value="up">Aumentar</option>
+        <option value="down">Descontar</option>
+      </select>
+      <input id="a3" type="text" inputmode="decimal" aria-label="Valor" placeholder="200">
+      <span>un</span><input id="b3" type="text" inputmode="decimal" aria-label="Porcentaje" placeholder="15">
+      <span>%</span>
+    </div>
+    <p class="out" id="r3" aria-live="polite"></p>
+  </section>
+
+  <section class="card" aria-labelledby="t4">
+    <h3 id="t4">Variación porcentual entre dos valores</h3>
+    <div class="line">
+      <span>De</span><input id="a4" type="text" inputmode="decimal" aria-label="Valor inicial" placeholder="80">
+      <span>a</span><input id="b4" type="text" inputmode="decimal" aria-label="Valor final" placeholder="100">
+    </div>
+    <p class="out" id="r4" aria-live="polite"></p>
+  </section>
+
+  <h2>Cómo se calcula un porcentaje</h2>
+  <p>Un porcentaje es una parte de cada 100. Para hallar el <strong>porcentaje de un número</strong>, multiplica el número por el porcentaje y divide entre 100: <code>150 × 20 ÷ 100 = 30</code>.</p>
+  <p>Para saber <strong>qué porcentaje es una cantidad de otra</strong>, divide la cantidad entre el total y multiplica por 100: <code>30 ÷ 150 × 100 = 20 %</code>.</p>
+  <p>Para <strong>aumentar</strong> un valor, súmale su porcentaje: <code>200 + 15 % = 230</code>. Para <strong>descontar</strong>, réstalo: <code>200 − 15 % = 170</code>.</p>
+  <p>La <strong>variación porcentual</strong> compara un valor final con uno inicial: <code>(final − inicial) ÷ inicial × 100</code>. De 80 a 100 es un aumento del 25 %. Puedes escribir decimales con coma o con punto.</p>
+
+  <h2>Preguntas frecuentes</h2>
+  <details><summary>¿Cómo calculo un descuento del 30 %?</summary>
+    <p>Usa la tercera calculadora: elige “Descontar”, escribe el precio y 30. Te muestra el precio final y cuánto te ahorras.</p></details>
+  <details><summary>¿Por qué subir un 50 % y bajar un 50 % no vuelve al mismo número?</summary>
+    <p>Porque cada porcentaje se calcula sobre un valor distinto. Si 100 sube un 50 % llega a 150, y bajar un 50 % de 150 da 75.</p></details>
+  <details><summary>¿Se guardan mis datos?</summary>
+    <p>No. Todo se calcula en tu navegador y no se envía a ningún servidor.</p></details>
+
+  <!-- ANUNCIO 2: segundo bloque de anuncios, opcional -->
+  <div class="ad" id="ad2"></div>
+
+  <footer>Los resultados son orientativos. <a href="privacidad.html">Política de privacidad</a></footer>
+</main>
+
+<script>
+(function(){
+  function $(i){return document.getElementById(i);}
+  function num(v){
+    v=String(v).trim().replace(',','.');
+    if(v==='')return null;
+    var n=Number(v);
+    return isFinite(n)?n:null;
+  }
+  function fmt(n){return (Math.round(n*10000)/10000).toLocaleString('es-ES',{maximumFractionDigits:4});}
+  function show(id,html,err){var o=$(id); o.innerHTML=html; o.className='out'+(err?' err':'');}
+
+  function c1(){
+    var p=num($('a1').value), n=num($('b1').value);
+    if(p===null||n===null){show('r1','');return;}
+    show('r1','El '+fmt(p)+' % de '+fmt(n)+' es <strong>'+fmt(n*p/100)+'</strong>');
+  }
+  function c2(){
+    var x=num($('a2').value), t=num($('b2').value);
+    if(x===null||t===null){show('r2','');return;}
+    if(t===0){show('r2','El total no puede ser 0.',true);return;}
+    show('r2',fmt(x)+' es el <strong>'+fmt(x/t*100)+' %</strong> de '+fmt(t));
+  }
+  function c3(){
+    var v=num($('a3').value), p=num($('b3').value), up=$('m3').value==='up';
+    if(v===null||p===null){show('r3','');return;}
+    var d=v*p/100, r=up?v+d:v-d;
+    show('r3','Resultado: <strong>'+fmt(r)+'</strong> ('+(up?'sube ':'baja ')+fmt(d)+')');
+  }
+  function c4(){
+    var a=num($('a4').value), b=num($('b4').value);
+    if(a===null||b===null){show('r4','');return;}
+    if(a===0){show('r4','El valor inicial no puede ser 0.',true);return;}
+    var v=(b-a)/Math.abs(a)*100;
+    show('r4',v===0?'No hay variación.':(v>0?'Aumento de ':'Disminución de ')+'<strong>'+fmt(Math.abs(v))+' %</strong>');
+  }
+  var map={a1:c1,b1:c1,a2:c2,b2:c2,a3:c3,b3:c3,m3:c3,a4:c4,b4:c4};
+  document.addEventListener('input',function(e){var f=map[e.target.id]; if(f)f();});
+  document.addEventListener('change',function(e){var f=map[e.target.id]; if(f)f();});
+})();
+</script>
+</body>
+</html>
